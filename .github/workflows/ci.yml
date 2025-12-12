@@ -35,7 +35,7 @@ jobs:
       env:
         IS_DEMO_MODE: true
         APP_SECRET_KEY: ci_secret_test
-        DATABASE_URL: sqlite:///test_ci.db
+        DATABASE_URL: sqlite:test_ci.db
       run: |
         cd backend
         nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 > ../backend.log 2>&1 &
