@@ -284,9 +284,10 @@ def _format_history_for_prompt(history: Optional[Sequence[Dict[str, Any]]], limi
                 was_correct = "correct" if flag else "incorrect"
             elif str(flag).lower() in {"true", "1", "yes"}:
                 was_correct = "correct"
-        rows.append(
-            f"- Q: {re.sub(r'\s+', ' ', question_text)[:140]} | Answer: {re.sub(r'\s+', ' ', answer_text)[:90]} ({was_correct})"
-        )
+        q_clean = re.sub(r"\s+", " ", question_text)[:140]
+        a_clean = re.sub(r"\s+", " ", answer_text)[:90]
+        rows.append(f"- Q: {q_clean} | Answer: {a_clean} ({was_correct})")
+
     return "\n".join(rows) if rows else "None"
 
 
