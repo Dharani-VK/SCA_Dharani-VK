@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { API_BASE_URL } from '../utils/constants'
 import { useAuth } from '../context/AuthContext'
 
+
+
 type User = {
     id: number
     university: string
@@ -14,7 +16,7 @@ type User = {
 
 export default function AdminDashboard() {
     const navigate = useNavigate()
-    const { token } = useAuth()
+    // const { token } = useAuth()  <-- Removing this dependency
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
@@ -52,6 +54,7 @@ export default function AdminDashboard() {
     }, [navigate])
 
     const fetchUsers = async () => {
+        const token = localStorage.getItem('token')
         try {
             if (!token) {
                 setError('No authentication token found. Please login again.')
@@ -92,12 +95,13 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         fetchUsers()
-    }, [token])
+    }, []) // Removed token dependency
 
     const handleAddUser = async (e: React.FormEvent) => {
         e.preventDefault()
         setAddError('')
         setAddLoading(true)
+        const token = localStorage.getItem('token')
 
         try {
             const res = await fetch(`${API_BASE_URL}/admin/users`, {
@@ -146,6 +150,7 @@ export default function AdminDashboard() {
             return
         }
 
+        const token = localStorage.getItem('token')
         try {
             const res = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
                 method: 'DELETE',

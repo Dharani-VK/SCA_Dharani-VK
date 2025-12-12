@@ -277,7 +277,13 @@ async def get_current_user(request: Request, token: Optional[str] = Depends(oaut
             logger.warning(f"AUTH_MISMATCH: User {user_id_str} not found with claims {university}/{roll_no}")
             raise credentials_exception
             
-        return Student(**dict(user_row))
+        user_obj = Student(**dict(user_row))
+        
+        # Override is_admin for the master ADMIN account to ensure access
+        if user_obj.roll_no == "ADMIN":
+            user_obj.is_admin = True
+            
+        return user_obj
     finally:
         conn.close()
 
