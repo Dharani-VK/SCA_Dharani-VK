@@ -2,10 +2,10 @@ name: API & Frontend CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ "**" ] 
   pull_request:
-    branches: [ main, master ]
-
+    branches: [ "**" ]
+    
 jobs:
   build_and_test:
     runs-on: ubuntu-latest

@@ -287,6 +287,7 @@ def _format_history_for_prompt(history: Optional[Sequence[Dict[str, Any]]], limi
         q_clean = re.sub(r"\s+", " ", question_text)[:140]
         a_clean = re.sub(r"\s+", " ", answer_text)[:90]
         rows.append(f"- Q: {q_clean} | Answer: {a_clean} ({was_correct})")
+
     return "\n".join(rows) if rows else "None"
 
 
