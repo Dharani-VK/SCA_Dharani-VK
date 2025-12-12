@@ -2,7 +2,6 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { UploadQueueItem } from '../types/file'
 import type { ChatMessage } from '../types/chat'
-import type { SummarySection } from '../types/summary'
 import type { QuizQuestion } from '../types/quiz'
 
 export type AppState = {
@@ -15,8 +14,6 @@ export type AppState = {
   updateProfile: (profile: { name?: string; role?: string }) => void
   chatHistory: ChatMessage[]
   addChatMessages: (messages: ChatMessage[]) => void
-  summarySections: SummarySection[]
-  setSummarySections: (sections: SummarySection[]) => void
   quizQuestions: QuizQuestion[]
   setQuizQuestions: (questions: QuizQuestion[]) => void
   notificationPrefs: Record<string, boolean>
@@ -65,8 +62,6 @@ const useAppStore = create<AppState>()(
         })),
       chatHistory: [],
       addChatMessages: (messages) => set((state) => ({ chatHistory: [...state.chatHistory, ...messages] })),
-      summarySections: [],
-      setSummarySections: (sections) => set({ summarySections: sections }),
       quizQuestions: [],
       setQuizQuestions: (questions) => set({ quizQuestions: questions }),
       notificationPrefs: defaultNotificationPrefs,
