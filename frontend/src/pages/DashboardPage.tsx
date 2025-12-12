@@ -46,9 +46,7 @@ function DashboardPage() {
       />
 
       {/* ===========================================================
-          NEW COMPACT SNAPSHOT LAYOUT 
-          Left: Profile + Quote
-          Right: Compact Study Streak
+          SNAPSHOT AREA: PROFILE + QUOTE + STREAK
       ============================================================ */}
       <div className="grid gap-6 md:grid-cols-[2fr_1fr]">
 
@@ -66,6 +64,7 @@ function DashboardPage() {
                 <h3 className="text-sm font-semibold text-slate-300 mb-2">
                   Student Information
                 </h3>
+
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-slate-400">Name</span>
@@ -93,14 +92,14 @@ function DashboardPage() {
                 <h3 className="text-sm font-semibold text-slate-300 mb-2">
                   Daily Inspiration
                 </h3>
-                <DailyQuote  />
+                <DailyQuote />
               </motion.div>
 
             </div>
           </Card>
         </motion.div>
 
-        {/* RIGHT SIDE – COMPACT STUDY STREAK  */}
+        {/* RIGHT SIDE – Study Streak */}
         <motion.div
           initial={{ opacity: 0, x: 22 }}
           animate={{ opacity: 1, x: 0 }}
@@ -108,7 +107,7 @@ function DashboardPage() {
         >
           <Card title="Study Streak" subtitle="Your daily learning consistency.">
             <div className="mt-2">
-              <StudyStreak  />
+              <StudyStreak />
             </div>
           </Card>
         </motion.div>
@@ -125,9 +124,7 @@ function DashboardPage() {
       )}
 
       {error && (
-        <Card
-          actions={<Button variant="secondary" onClick={refresh}>Retry</Button>}
-        >
+        <Card actions={<Button variant="secondary" onClick={refresh}>Retry</Button>}>
           <p className="text-sm text-rose-400">{error}</p>
         </Card>
       )}
@@ -138,7 +135,7 @@ function DashboardPage() {
       {overview.metrics.length > 0 && <MetricsGrid metrics={overview.metrics} />}
 
       {/* ===========================================================
-          MAIN GRID (Pipeline + Actions + Timeline)
+          MAIN PIPELINE AREA
       ============================================================ */}
       <section className="grid gap-6 2xl:grid-cols-[2fr_1fr]">
         <div className="space-y-6">

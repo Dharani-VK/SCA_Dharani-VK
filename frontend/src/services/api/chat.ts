@@ -24,13 +24,16 @@ export async function askQuestion(payload: ChatRequest): Promise<ChatResponse> {
         question: payload.message,
         top_k: payload.topK,
         sources: payload.sources,
-        conversation: payload.conversation?.map((turn) => ({ role: turn.role, content: turn.content })),
+        conversation: payload.conversation?.map((turn) => ({
+          role: turn.role,
+          content: turn.content,
+        })),
       },
     }
   )
 
   return {
     message: result.answer,
-    sources: result.sources?.map((src) => src?.source || 'Unknown Source') ?? [],
+    sources: result.sources ?? [],
   }
 }
