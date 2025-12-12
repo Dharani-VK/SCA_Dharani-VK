@@ -29,7 +29,6 @@ jobs:
 
     - name: Syntax Check (Python)
       run: |
-        # Fails if any byte-compilation error (syntax error) is found
         python -m compileall backend/app
 
     - name: Start Backend & Health Check
@@ -39,20 +38,12 @@ jobs:
         DATABASE_URL: sqlite:///test_ci.db
       run: |
         cd backend
-        # Start uvicorn in background
         nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 > ../backend.log 2>&1 &
         pid=$!
         echo "Backend started with PID $pid"
-        
-        # Wait for server to be ready
-        echo "Waiting for backend..."
+
         sleep 10
-        
-        # Check Health Endpoint
-        echo "Checking health..."
-        curl -f http://127.0.0.1:8000/health || (echo "Health check failed. Backend logs:" && cat ../backend.log && exit 1)
-        
-        # Cleanup
+        curl -f http://127.0.0.1:8000/health || (echo "Health check failed. Logs:" && cat ../backend.log && exit 1)
         kill $pid
 
     # ----------------------------------------------------------------
@@ -69,9 +60,8 @@ jobs:
         npm install
 
     - name: Build Frontend
+      env:
+        CI: false
       run: |
         cd frontend
         npm run build
-      env:
-        # Avoid treating warnings as errors in CI if strictly compiled
-        CI: false 
