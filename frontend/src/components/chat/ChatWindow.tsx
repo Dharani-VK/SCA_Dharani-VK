@@ -1,11 +1,12 @@
 import { useRef, useEffect } from 'react'
 import ChatMessage, { ChatRole } from './ChatMessage'
+import type { SourceMetadata } from '../../types/chat'
 
 export type ConversationItem = {
   id: string
   role: ChatRole
   content: string
-  sources?: string[]
+  sources?: SourceMetadata[]
 }
 
 type ChatWindowProps = {
