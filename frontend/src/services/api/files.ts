@@ -67,9 +67,9 @@ export async function uploadFile(file: File, force = false): Promise<UploadRespo
       // File too large
       try {
         const parsed = JSON.parse(bodyText)
-        message = parsed?.detail || 'File is too large. Maximum size is 50MB.'
+        message = parsed?.detail || 'File is too large. Maximum size is 200MB.'
       } catch {
-        message = 'File is too large. Maximum size is 50MB.'
+        message = 'File is too large. Maximum size is 200MB.'
       }
     } else if (response.status === 401) {
       message = 'Authentication required. Please login again.'

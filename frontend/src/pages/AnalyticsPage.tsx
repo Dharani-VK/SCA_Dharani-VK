@@ -166,15 +166,6 @@ function AnalyticsPage() {
             <Button variant="ghost" onClick={handleRefresh} icon={<ArrowPathIcon className="h-4 w-4" />}>
               Refresh
             </Button>
-            <a
-              href={analyticsUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/80 px-5 py-2 text-sm font-semibold text-slate-100 transition hover:border-primary-400 hover:text-primary-100"
-            >
-              Open in new tab
-              <ArrowTopRightOnSquareIcon className="h-4 w-4" />
-            </a>
           </div>
         }
       >
@@ -243,16 +234,13 @@ function AnalyticsPage() {
           </p>
         )}
 
-        <p className="mt-4 text-sm text-slate-400">
-          This dashboard updates automatically as new answers arrive. Use the filters above to focus on the most recent
-          session, review overall progress, or inspect a particular document.
-        </p>
-        <div className="mt-4 overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-950/60">
+        <div className="mt-8 aspect-[4/3] w-full overflow-hidden rounded-2xl border border-slate-200/60 bg-white/50 shadow-sm dark:border-slate-800/60 dark:bg-slate-950/40">
           <iframe
             key={iframeKey}
             src={analyticsUrl}
-            title="Quiz analytics visualization"
-            className="h-[720px] w-full"
+            className="h-full w-full border-0"
+            title="Analytics Visualization"
+            sandbox="allow-scripts allow-same-origin"
             loading="lazy"
           />
         </div>

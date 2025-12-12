@@ -1,51 +1,83 @@
-import { MagnifyingGlassIcon, Bars3Icon } from '@heroicons/react/24/outline'
+import { useState } from 'react'
+import { Bars3Icon, SunIcon, MoonIcon, BellIcon } from '@heroicons/react/24/outline'
 import { useTheme } from '../../app/providers/ThemeProvider'
-import Avatar from '../common/Avatar'
-import ThemeToggle from '../common/ThemeToggle'
+import ThemeToggle from '../common/ThemeToggle' // We can reuse or inline logic, but let's inline for specific icon reqs
 import { useAuth } from '../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import NotificationPopover from '../common/NotificationPopover'
 
 type TopBarProps = {
   onMenuClick: () => void
 }
 
 function TopBar({ onMenuClick }: TopBarProps) {
-  const { theme } = useTheme()
+  const { theme, toggleTheme } = useTheme()
   const { user } = useAuth()
   const navigate = useNavigate()
+  const [showNotifications, setShowNotifications] = useState(false)
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between border-b border-transparent bg-white/80 px-4 py-3 shadow-[0_10px_30px_-24px_rgba(15,23,42,0.6)] backdrop-blur-xl dark:bg-slate-900/70 md:px-8 lg:px-10">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <button
           type="button"
           onClick={onMenuClick}
-          className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 bg-white/90 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-primary-500 hover:text-primary-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-400 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100"
+          className="inline-flex items-center justify-center rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 lg:hidden"
         >
-          <Bars3Icon className="h-5 w-5" />
-          <span className="hidden sm:inline">Menu</span>
+          <Bars3Icon className="h-6 w-6" />
         </button>
-        <div className="hidden items-center gap-3 rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-2 text-sm text-slate-500 shadow-inner dark:border-slate-800/60 dark:bg-slate-900/70 dark:text-slate-300 md:flex">
-          <MagnifyingGlassIcon className="h-5 w-5 text-slate-400 dark:text-slate-500" />
-          <input
-            placeholder="Search documents, notes, people…"
-            className="w-64 bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-500"
-          />
-        </div>
       </div>
 
-      <div className="flex items-center gap-5">
-        <ThemeToggle />
-        <div className="hidden rounded-2xl border border-slate-200/70 bg-white/80 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-500 dark:border-slate-800/60 dark:bg-slate-900/70 dark:text-slate-400 md:block">
-          {theme === 'dark' ? 'Night Mode' : 'Day Mode'}
+      <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-3 sm:flex">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-lg shadow-lg shadow-indigo-500/30">
+          🎓
+        </span>
+        <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+          Smart Campus Assistant
+        </span>
+      </div>
+
+      <div className="flex items-center gap-3 sm:gap-5">
+
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? (
+            <SunIcon className="h-5 w-5" />
+          ) : (
+            <MoonIcon className="h-5 w-5" />
+          )}
+        </button>
+
+        {/* Notification Bell */}
+        <div className="relative">
+          <button
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+          >
+            <BellIcon className="h-5 w-5" />
+            <span className="absolute top-2 right-2.5 h-1.5 w-1.5 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900"></span>
+          </button>
+
+          <NotificationPopover
+            isOpen={showNotifications}
+            onClose={() => setShowNotifications(false)}
+          />
         </div>
+
+        {/* Profile Avatar */}
         <button
           type="button"
           aria-label="Open settings"
           onClick={() => navigate('/settings')}
-          className="rounded-full border border-transparent p-1 transition hover:border-primary-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-400"
+          className="ml-1 h-9 w-9 overflow-hidden rounded-full border-2 border-slate-200 bg-slate-100 shadow-sm transition hover:border-primary-400 dark:border-slate-700 dark:bg-slate-800"
         >
-          <Avatar name={user?.full_name || 'Student'} />
+          <span className="flex h-full w-full items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">
+            {(user?.full_name || 'ST').substring(0, 2).toUpperCase()}
+          </span>
         </button>
       </div>
     </header>

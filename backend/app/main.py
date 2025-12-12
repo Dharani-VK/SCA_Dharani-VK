@@ -26,6 +26,7 @@ from .analytics import (
     resolve_session_id,
     get_quiz_analytics_options,
 )
+from fastapi.concurrency import run_in_threadpool
 from .vector_store import ChromaVectorStore
 from .ingest import ingest_pdf_bytes, embed_texts
 from .rag import (
@@ -39,7 +40,7 @@ from .utils import generate_answer_with_context, generate_summary, generate_adap
 from app.routers import auth, admin, documents
 
 # Configure FastAPI with larger request body size limit
-# Set to 100MB to accommodate 50MB files + multipart overhead
+# Set to 200MB to accommodate large PDF/PPTX files
 
 import os
 print("-" * 60)
@@ -50,7 +51,7 @@ app = FastAPI(
     title="Smart Campus Assistant",
     version="1.0.0",
     # Allow larger request bodies for file uploads
-    # Default is 16MB, we increase to 100MB
+    # Default is 16MB, we increase to 200MB
 )
 
 # --- Middleware ---
@@ -357,8 +358,8 @@ class FeedbackRequest(BaseModel):
     session_id: Optional[str] = Field(default=None, alias="sessionId")
 
 # --- File Upload Configuration ---
-# Maximum file size: 50MB (configurable via environment variable)
-MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", "50"))
+# Maximum file size: 200MB (configurable via environment variable)
+MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", "200"))
 MAX_UPLOAD_SIZE_BYTES = MAX_UPLOAD_SIZE_MB * 1024 * 1024
 
 @app.post("/ingest-file-legacy", include_in_schema=False)
@@ -426,7 +427,8 @@ async def ingest_file(
 
 
     try:
-        result = ingest_pdf_bytes(
+        result = await run_in_threadpool(
+            ingest_pdf_bytes,
             content,
             store,
             source_name=file.filename,

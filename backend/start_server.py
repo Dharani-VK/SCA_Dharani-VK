@@ -5,8 +5,8 @@ import uvicorn
 import os
 
 if __name__ == "__main__":
-    # Get max upload size from environment (default 50MB)
-    max_upload_mb = int(os.getenv("MAX_UPLOAD_SIZE_MB", "50"))
+    # Get max upload size from environment (default 200MB)
+    max_upload_mb = int(os.getenv("MAX_UPLOAD_SIZE_MB", "200"))
     
     # Convert to bytes and add overhead for multipart form data
     # Uvicorn limit should be higher than application limit to avoid connection drops

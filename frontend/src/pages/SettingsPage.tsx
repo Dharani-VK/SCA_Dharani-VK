@@ -24,12 +24,7 @@ function SettingsPage() {
 
       <PreferencesForm />
 
-      <Card title="Integrations" subtitle="Prepare API keys and webhooks for backend access.">
-        <div className="space-y-3 text-sm text-slate-300">
-          <p>Placeholder for API key management. Backend team can drop in secure forms later.</p>
-          <Button variant="secondary">Generate Test Key</Button>
-        </div>
-      </Card>
+
     </div>
   )
 }

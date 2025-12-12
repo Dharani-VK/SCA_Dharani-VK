@@ -62,9 +62,7 @@ function ProfileCard() {
             <ArrowRightOnRectangleIcon className="h-5 w-5" />
             Sign Out & Switch Account
           </Button>
-          <p className="mt-2 text-center text-xs text-slate-500 dark:text-slate-400">
-            Test multi-tenant isolation by logging in as different students
-          </p>
+
         </div>
       </div>
     </Card>

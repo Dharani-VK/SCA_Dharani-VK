@@ -6,6 +6,7 @@ import Button from '../components/common/Button'
 import { useUpload } from '../hooks/useUpload'
 import { fetchDocuments } from '../services/api/documents'
 import { useAuth } from '../context/AuthContext'
+import WikipediaImportCard from '../components/upload/WikipediaImportCard'
 import type { UploadQueueItem } from '../types/file'
 
 function UploadPage() {
@@ -13,6 +14,22 @@ function UploadPage() {
   const { user } = useAuth() // Get current user to track changes
   const [serverDocs, setServerDocs] = useState<UploadQueueItem[]>([])
   const [loading, setLoading] = useState(true)
+
+  const refreshDocuments = async () => {
+    try {
+      const docs = await fetchDocuments()
+      const items: UploadQueueItem[] = docs.map((d) => ({
+        id: d.id,
+        name: d.title,
+        sizeLabel: d.tags.join(', ') || 'Synced',
+        progress: 100,
+        status: 'complete',
+      }))
+      setServerDocs(items)
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   // CRITICAL: Fetch tenant-scoped documents whenever user changes
   // This ensures isolation - each user only sees their own documents
@@ -27,20 +44,10 @@ function UploadPage() {
       return
     }
 
-    fetchDocuments()
-      .then((docs) => {
-        const items: UploadQueueItem[] = docs.map((d) => ({
-          id: d.id,
-          name: d.title,
-          sizeLabel: d.tags.join(', ') || 'Synced',
-          progress: 100,
-          status: 'complete',
-        }))
-        setServerDocs(items)
-      })
-      .catch((err) => console.error('Failed to load documents', err))
-      .finally(() => setLoading(false))
+    refreshDocuments().finally(() => setLoading(false))
   }, [user]) // Re-fetch when user changes
+
+
 
   // Merge pending local uploads with confirmed server documents
   // Filter out server docs if they are currently being re-uploaded (collision check by name?)
@@ -69,6 +76,8 @@ function UploadPage() {
       />
 
       <UploadDropzone onFilesSelected={ingestFiles} />
+
+      <WikipediaImportCard onImportComplete={refreshDocuments} />
 
       <section className="upload-fade-in grid gap-4 rounded-3xl border border-slate-800 bg-slate-900/70 p-6 text-slate-200 shadow-[0_18px_40px_-24px_rgba(15,23,42,0.65)] transition-transform duration-500 ease-out md:p-8 md:hover:-translate-y-1">
         <header className="flex flex-col gap-2">

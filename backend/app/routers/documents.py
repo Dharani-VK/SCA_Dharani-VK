@@ -3,7 +3,9 @@ import time
 import hashlib
 from typing import Dict, Any, List, Optional, Union
 from datetime import datetime
+import requests # Added for Wikipedia integration
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Query, Request
+from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 import sqlite3
 
@@ -34,7 +36,165 @@ class DocumentDetailResponse(BaseModel):
     version: Optional[int] = None
     versions: Optional[List[Dict[str, Any]]] = None
 
+class WikiPayload(BaseModel):
+    query: str
+
 # --- Logic ---
+
+def _fetch_wikipedia_content(query: str) -> tuple[str, str]:
+    """Fetch article title and text content from Wikipedia API."""
+    # 1. Search for the page
+    search_url = "https://en.wikipedia.org/w/api.php"
+    headers = {"User-Agent": "SmartCampusAssistant/1.0 (contact@example.com)"}
+    params = {
+        "action": "opensearch",
+        "search": query,
+        "limit": 1,
+        "namespace": 0,
+        "format": "json"
+    }
+    try:
+        resp = requests.get(search_url, params=params, headers=headers, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Failed to contact Wikipedia: {str(e)}")
+
+    if not data or len(data) < 2 or not data[1]:
+        raise HTTPException(status_code=404, detail="No Wikipedia article found for this topic.")
+    
+    title = data[1][0]
+    
+    # 2. Get the content
+    content_url = "https://en.wikipedia.org/w/api.php"
+    c_params = {
+        "action": "query",
+        "format": "json",
+        "prop": "extracts",
+        "titles": title,
+        "explaintext": 1,
+        "exsectionformat": "plain",
+        "redirects": 1
+    }
+    try:
+        c_resp = requests.get(content_url, params=c_params, headers=headers, timeout=10, allow_redirects=True)
+        c_resp.raise_for_status()
+        c_data = c_resp.json()
+        pages = c_data.get("query", {}).get("pages", {})
+        if not pages:
+             raise HTTPException(status_code=404, detail="Page content not found.")
+        page = next(iter(pages.values()))
+        extract = page.get("extract", "")
+        if not extract:
+             raise HTTPException(status_code=400, detail="Article has no text content.")
+        return title, extract
+    except HTTPException:
+        raise
+    except Exception as e:
+         raise HTTPException(status_code=502, detail=f"Failed to fetch article content: {str(e)}")
+
+
+@router.post("/documents/ingest/wikipedia")
+async def ingest_wikipedia(
+    payload: WikiPayload,
+    request: Request,
+    current_user: Student = Depends(get_current_user),
+    student_filter: Dict[str, Any] = Depends(get_student_filter)
+):
+    """
+    Ingest a Wikipedia article by topic using LangChain Loader.
+    """
+    from langchain_community.document_loaders import WikipediaLoader
+
+    try:
+        # Load content using LangChain (fetches max 1 doc)
+        loader = WikipediaLoader(query=payload.query, load_max_docs=1, doc_content_chars_max=100000)
+        docs = loader.load()
+        
+        if not docs:
+             raise HTTPException(status_code=404, detail="No Wikipedia article found for this topic.")
+             
+        # Extract content from the first result
+        doc = docs[0]
+        title = doc.metadata.get("title", payload.query)
+        text_content = doc.page_content
+        
+    except Exception as e:
+        # Handle cases where wikipedia package might error on ambiguity or connection
+        if "No Wikipedia article found" in str(e):
+             raise HTTPException(status_code=404, detail="No Wikipedia article found for this topic.")
+        raise HTTPException(status_code=502, detail=f"Wikipedia Load Error: {str(e)}")
+
+    # Simulate a file upload
+    fake_filename = f"Wiki - {title}.txt"
+    content_bytes = text_content.encode('utf-8')
+    file_size = len(content_bytes)
+    file_hash = calculate_file_hash(content_bytes)
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Check Content Duplicate
+        cursor.execute(
+             "SELECT id FROM documents WHERE university=? AND roll_no=? AND content_hash=? AND is_deleted=0",
+             (current_user.university, current_user.roll_no, file_hash)
+        )
+        exact_match = cursor.fetchone()
+        if exact_match:
+            return {
+                "status": "duplicate_detected",
+                "message": f"Wiki article '{title}' is already in your library.",
+                "document_id": exact_match[0]
+            }
+
+        # Check Name Duplicate (Version bump if same name but different content - unlikely for Wiki unless updated)
+        # We'll just define storage path
+        storage_filename = f"{current_user.roll_no}_{int(time.time())}_{fake_filename}"
+        
+        # Ingest
+        result = await run_in_threadpool(
+            ingest_pdf_bytes,
+            content_bytes,
+            store,
+            source_name=storage_filename, 
+            with_metrics=True,
+            metadata_overrides={
+                "university": current_user.university,
+                "roll_no": current_user.roll_no,
+                "u_id": current_user.id,
+                "original_filename": fake_filename,
+                "version": 1,
+                "source_type": "wikipedia"
+            }
+        )
+        
+        difficulty = "Medium"
+        if isinstance(result, dict) and "structured_content" in result:
+             paragraphs = result["structured_content"].get("paragraphs", [])
+             full_sample = " ".join(paragraphs[:5])
+             difficulty = calculate_difficulty(full_sample)
+
+        created_at = datetime.utcnow().isoformat()
+        
+        cursor.execute("""
+            INSERT INTO documents (university, roll_no, filename, storage_path, file_size, difficulty, created_at, version_number, content_hash)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (current_user.university, current_user.roll_no, fake_filename, storage_filename, file_size, difficulty, created_at, 1, file_hash))
+        doc_id = cursor.lastrowid
+        conn.commit()
+        
+        return {
+            "status": "success",
+            "document_id": doc_id,
+            "title": title,
+            "chunks_added": int(result.get("chunk_count", 0))
+        }
+
+    finally:
+        conn.close()
+
+
 
 def calculate_difficulty(text: str) -> str:
     if not text: return "Medium"
@@ -109,7 +269,8 @@ async def ingest_file(
         storage_filename = f"{current_user.roll_no}_{int(time.time())}_{file.filename}"
         
         # Ingest to Chroma
-        result = ingest_pdf_bytes(
+        result = await run_in_threadpool(
+            ingest_pdf_bytes,
             content,
             store,
             source_name=storage_filename, 

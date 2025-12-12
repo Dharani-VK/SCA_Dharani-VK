@@ -2,7 +2,6 @@ import { motion } from "framer-motion"
 
 import QuickActions from '../components/dashboard/QuickActions'
 import UploadShortcut from '../components/dashboard/UploadShortcut'
-import RecentFiles from '../components/dashboard/RecentFiles'
 import MetricsGrid from '../components/dashboard/MetricsGrid'
 import ActivityTimeline from '../components/dashboard/ActivityTimeline'
 import UpcomingEvents from '../components/dashboard/UpcomingEvents'
@@ -168,8 +167,7 @@ function DashboardPage() {
       {/* ===========================================================
           FOOTER GRID
       ============================================================ */}
-      <section className="grid gap-6 xl:grid-cols-[2fr_1fr]">
-        <RecentFiles />
+      <section className="grid gap-6">
         {overview.events.length > 0 && <UpcomingEvents events={overview.events} />}
       </section>
 

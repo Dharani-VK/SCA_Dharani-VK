@@ -2,6 +2,16 @@ import { FEATURE_FLAGS, API_BASE_URL } from '../../utils/constants'
 import type { CampusDocument, DocumentDetail } from '../../types/file'
 import { request } from '../httpClient'
 
+
+
+export async function ingestWikipedia(topic: string): Promise<any> {
+  const resp = await request<{ status: string; title: string }>(`${API_BASE_URL}/documents/ingest/wikipedia`, {
+    method: 'POST',
+    body: { query: topic }
+  })
+  return resp
+}
+
 const mockDocuments: CampusDocument[] = [
   {
     id: 'mock-1',

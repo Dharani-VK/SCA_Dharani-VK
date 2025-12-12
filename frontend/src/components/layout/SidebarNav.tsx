@@ -130,7 +130,7 @@ function SidebarNav({ isDesktop, collapsed, mobileVisible, onCollapseToggle, onC
 
         {showLabels && (
           <div className="mt-4 px-2 text-xs text-slate-500 dark:text-slate-500">
-            <p>v1.0 • Powered by AI</p>
+            <p>v1.0</p>
           </div>
         )}
       </div>
