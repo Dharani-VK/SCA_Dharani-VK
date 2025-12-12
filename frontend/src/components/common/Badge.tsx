@@ -3,8 +3,9 @@ import { ReactNode } from 'react'
 
 type BadgeProps = {
   children: ReactNode
-  tone?: 'default' | 'success' | 'warning' | 'danger'
+  tone?: 'default' | 'success' | 'warning' | 'danger' | 'info'
   className?: string
+  size?: 'sm' | 'md'
 }
 
 const toneStyles: Record<NonNullable<BadgeProps['tone']>, string> = {
@@ -12,6 +13,7 @@ const toneStyles: Record<NonNullable<BadgeProps['tone']>, string> = {
   success: 'bg-emerald-500/10 text-emerald-200 border-emerald-500/30',
   warning: 'bg-amber-500/10 text-amber-200 border-amber-500/30',
   danger: 'bg-red-500/10 text-red-200 border-red-500/30',
+  info: 'bg-blue-500/10 text-blue-200 border-blue-500/30',
 }
 
 function Badge({ children, tone = 'default', className }: BadgeProps) {
