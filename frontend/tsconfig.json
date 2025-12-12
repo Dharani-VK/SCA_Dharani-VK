@@ -18,5 +18,12 @@
     "types": ["vite/client"]
   },
   "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/__tests__/**",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

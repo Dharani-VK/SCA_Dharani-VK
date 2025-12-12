@@ -93,7 +93,7 @@ function DashboardPage() {
                 <h3 className="text-sm font-semibold text-slate-300 mb-2">
                   Daily Inspiration
                 </h3>
-                <DailyQuote compact />
+                <DailyQuote  />
               </motion.div>
 
             </div>
@@ -108,7 +108,7 @@ function DashboardPage() {
         >
           <Card title="Study Streak" subtitle="Your daily learning consistency.">
             <div className="mt-2">
-              <StudyStreak compact />
+              <StudyStreak  />
             </div>
           </Card>
         </motion.div>

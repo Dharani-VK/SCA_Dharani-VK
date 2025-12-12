@@ -125,7 +125,7 @@ function LearningPipeline() {
             <p className="text-sm text-slate-600 dark:text-slate-400">{activeStep.description}</p>
           </header>
 
-          {activeStep.interactive ? (
+          {(acticeStep as any).interactive ? (
             <div className="space-y-4">
               <div>
                 <label className="mb-1 block text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
