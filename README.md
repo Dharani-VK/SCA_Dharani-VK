@@ -136,7 +136,8 @@ python verify_student_flow.py
 - **Admin User**: `ADMIN` / `admin2025`
 - **Test Student**: `test_student` / `password123` (or register a new account)
 
-Debugging & Fix Workflow (Documented)
+
+## Debugging & Fix Workflow (Documented)
 🔍 Diagnosis Phase
 python backend/reproduce_upload_error.py
 
@@ -163,7 +164,7 @@ Resolve upload & ingestion failures
 
 ⚠️ Ensure this script is run from the correct project root.
 
-✅ Verification Phase
+## ✅ Verification Phase
 python backend/reproduce_upload_error.py
 
 
@@ -191,5 +192,6 @@ Remove temporary debug scripts:
 
 del backend\reproduce_upload_error.py
 del backend\test_wiki_ingest.py
+
 
 
