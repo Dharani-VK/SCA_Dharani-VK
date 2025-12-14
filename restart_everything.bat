@@ -18,7 +18,7 @@ echo     Ports released
 echo.
 echo [3/5] Starting backend...
 cd /d "%~dp0backend"
-start "Smart Campus Backend" cmd /k "python start_server.py"
+start "Smart Campus Backend" cmd /k "venv\Scripts\python start_server.py"
 
 echo     Backend starting...
 
@@ -27,7 +27,7 @@ echo [3.5/5] Checking Database...
 if not exist "campus.db" (
     if not exist "analytics.db" (
          echo     Initializing Database...
-         ..\venv\Scripts\python init_db_manual.py
+         venv\Scripts\python init_db_manual.py
     )
 )
 
