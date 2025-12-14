@@ -76,16 +76,14 @@ DATABASE_URL=sqlite:///./sql_app.db
 ```bash
 cd backend
 python -m venv venv
-# Windows:
-..\.venv\Scripts\activate
-# Linux/Mac:
-# source ../.venv/bin/activate
-pip install -r requirements.txt
-cd ..
-```
 
+pip install -r requirements.txt
+ python start_server.py --> If error exist : pip install langchain-community wikipedia  --> python init_db_manual.py  -->python start_server.py
+```
+(New Terminal)
 **Frontend:**
 ```bash
+cd SCA_Dharani-VK
 cd frontend
 npm install
 cd ..
@@ -98,14 +96,19 @@ We provide a convenient script to start all services (Backend + Frontend) automa
 **Windows:**
 Double-click `restart_everything.bat` 
 OR run in terminal:
+
 ```bash
+cd SCA_Dharani-VK
 .\restart_everything.bat
 ```
+Must DO (Another Terminal) :
+cd SCA_Dharani-VK
+cd backend
+python start_server.py --> If error exist : pip install langchain-community wikipedia  --> python init_db_manual.py  -->python start_server.py
 
 This will:
-1. Stop any existing server processes.
-2. Start the Backend server (http://127.0.0.1:8000).
-3. Start the Frontend dev server (http://localhost:5173).
+1. Start the Backend server (http://127.0.0.1:8000).
+2. Start the Frontend dev server (http://localhost:5173).
 
 ## ✅ Verification & Testing
 
