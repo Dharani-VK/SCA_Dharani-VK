@@ -79,18 +79,30 @@ function UploadPage() {
 
       <WikipediaImportCard onImportComplete={refreshDocuments} />
 
-      <section className="upload-fade-in grid gap-4 rounded-3xl border border-slate-800 bg-slate-900/70 p-6 text-slate-200 shadow-[0_18px_40px_-24px_rgba(15,23,42,0.65)] transition-transform duration-500 ease-out md:p-8 md:hover:-translate-y-1">
+      <section className="upload-fade-in grid gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-transform duration-500 ease-out dark:border-slate-800 dark:bg-slate-900/70 dark:shadow-[0_18px_40px_-24px_rgba(15,23,42,0.65)] md:p-8 md:hover:-translate-y-1">
         <header className="flex flex-col gap-2">
-          <h2 className="text-xl font-semibold">Suggested data sources</h2>
-          <p className="text-sm text-slate-400">
+          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Suggested data sources</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Blend personal material with trusted public references for richer retrieval and practice questions.
           </p>
         </header>
-        <ul className="grid gap-2 text-sm leading-relaxed text-slate-300 md:grid-cols-2">
-          <li className="rounded-2xl bg-white/5 p-3 text-slate-200/90">Your own lecture notes, project docs, lab manuals, and past assignments.</li>
-          <li className="rounded-2xl bg-white/5 p-3 text-slate-200/90">Authoritative encyclopedias like the Wikipedia API for quick concept refreshers.</li>
-          <li className="rounded-2xl bg-white/5 p-3 text-slate-200/90">Open education resources, including NCERT textbooks and other public syllabi.</li>
-          <li className="rounded-2xl bg-white/5 p-3 text-slate-200/90">Instructor slide decks, recorded webinar transcripts, or departmental policy PDFs.</li>
+        <ul className="grid gap-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300 md:grid-cols-2">
+          <li className="flex items-start gap-3 rounded-xl bg-slate-50 p-4 transition-colors hover:bg-slate-100 dark:bg-white/5 dark:text-slate-200/90 dark:hover:bg-white/10">
+            <span className="mt-1 block h-2 w-2 rounded-full bg-indigo-500"></span>
+            Your own lecture notes, project docs, lab manuals, and past assignments.
+          </li>
+          <li className="flex items-start gap-3 rounded-xl bg-slate-50 p-4 transition-colors hover:bg-slate-100 dark:bg-white/5 dark:text-slate-200/90 dark:hover:bg-white/10">
+            <span className="mt-1 block h-2 w-2 rounded-full bg-pink-500"></span>
+            Authoritative encyclopedias like the Wikipedia API for quick concept refreshers.
+          </li>
+          <li className="flex items-start gap-3 rounded-xl bg-slate-50 p-4 transition-colors hover:bg-slate-100 dark:bg-white/5 dark:text-slate-200/90 dark:hover:bg-white/10">
+            <span className="mt-1 block h-2 w-2 rounded-full bg-emerald-500"></span>
+            Open education resources, including NCERT textbooks and other public syllabi.
+          </li>
+          <li className="flex items-start gap-3 rounded-xl bg-slate-50 p-4 transition-colors hover:bg-slate-100 dark:bg-white/5 dark:text-slate-200/90 dark:hover:bg-white/10">
+            <span className="mt-1 block h-2 w-2 rounded-full bg-amber-500"></span>
+            Instructor slide decks, recorded webinar transcripts, or departmental policy PDFs.
+          </li>
         </ul>
       </section>
 

@@ -2,7 +2,7 @@ import { createContext, ReactNode, useContext, useEffect, useMemo, useState } fr
 
 const darkClass = 'dark'
 const lightClass = 'light'
-const storageKey = 'sca-theme'
+const storageKey = 'sca-theme-v3'
 
 export type ThemeMode = 'light' | 'dark'
 
@@ -24,10 +24,7 @@ function ThemeProvider({ children }: { children: ReactNode }) {
       return stored
     }
 
-    if (window.matchMedia?.('(prefers-color-scheme: light)').matches) {
-      return 'light'
-    }
-
+    // Default to dark mode regardless of system preference
     return 'dark'
   })
 

@@ -34,7 +34,7 @@ export default function Register() {
         try {
             // Register/Login (backend handles both)
             // Using skipAuth since this is registration
-            await request<any>('http://localhost:8000/auth/login', {
+            await request<any>('/api/auth/login', {
                 method: 'POST',
                 body: formData,
                 skipAuth: true

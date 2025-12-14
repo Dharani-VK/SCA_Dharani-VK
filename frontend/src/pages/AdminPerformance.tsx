@@ -41,7 +41,7 @@ export default function AdminPerformance() {
 
     const loadAdminData = async () => {
         try {
-            const studentsData = await request<Student[]>('http://localhost:8000/admin/student-performance', {
+            const studentsData = await request<Student[]>('/api/admin/student-performance', {
                 method: 'GET'
             });
             setStudents(studentsData || []);

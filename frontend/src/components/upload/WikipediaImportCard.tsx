@@ -26,23 +26,27 @@ function WikipediaImportCard({ onImportComplete }: WikipediaImportCardProps) {
     }
 
     return (
-        <section className="upload-fade-in grid gap-4 rounded-3xl border border-slate-800 bg-slate-900/70 p-6 text-slate-200 shadow-[0_18px_40px_-24px_rgba(15,23,42,0.65)] transition-transform duration-500 ease-out md:p-8 md:hover:-translate-y-1">
-            <header className="flex flex-col gap-2">
-                <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-100">
-                    <GlobeAltIcon className="h-6 w-6 text-primary-400" />
+        <section className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/70 md:p-8">
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-indigo-50 blur-2xl transition-all group-hover:bg-indigo-100 dark:bg-indigo-900/20 dark:group-hover:bg-indigo-900/30"></div>
+
+            <header className="relative flex flex-col gap-2 mb-6">
+                <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-100">
+                    <div className="rounded-lg bg-indigo-50 p-2 dark:bg-indigo-900/30">
+                        <GlobeAltIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                    </div>
                     Wikipedia Import
                 </h2>
-                <p className="text-sm text-slate-400">
-                    Instantly fetch authoritative articles to expand your knowledge base.
+                <p className="text-sm text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
+                    Instantly fetch and ingest authoritative articles from Wikipedia to expand your knowledge base with trusted definitions and concepts.
                 </p>
             </header>
 
-            <div className="flex w-full gap-3">
-                <div className="relative flex-1 group">
+            <div className="relative flex w-full flex-col sm:flex-row gap-3">
+                <div className="relative flex-1 group/input">
                     <input
                         type="text"
-                        placeholder="Enter a topic (e.g., 'Machine Learning')"
-                        className="w-full rounded-xl border border-slate-700 bg-slate-950/50 px-4 py-3 text-slate-100 placeholder-slate-500 transition-all focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 group-hover:border-slate-600"
+                        placeholder="Enter a topic (e.g., 'Quantum Mechanics')"
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 placeholder-slate-400 transition-all focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-indigo-500 dark:focus:bg-slate-950"
                         value={wikiTopic}
                         onChange={e => setWikiTopic(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && handleWikiImport()}
@@ -52,7 +56,7 @@ function WikipediaImportCard({ onImportComplete }: WikipediaImportCardProps) {
                 <Button
                     onClick={handleWikiImport}
                     disabled={wikiLoading || !wikiTopic.trim()}
-                    className="min-w-[120px] rounded-xl"
+                    className="min-w-[120px] rounded-xl shadow-sm"
                     variant="primary"
                 >
                     {wikiLoading ? (
