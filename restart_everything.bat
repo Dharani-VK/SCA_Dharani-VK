@@ -19,7 +19,18 @@ echo.
 echo [3/5] Starting backend...
 cd /d "%~dp0backend"
 start "Smart Campus Backend" cmd /k "python start_server.py"
+
 echo     Backend starting...
+
+echo.
+echo [3.5/5] Checking Database...
+if not exist "campus.db" (
+    if not exist "analytics.db" (
+         echo     Initializing Database...
+         ..\venv\Scripts\python init_db_manual.py
+    )
+)
+
 
 echo.
 echo [4/5] Waiting for backend to initialize...
