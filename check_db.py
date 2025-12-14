@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-db_path = "backend/campus.db"
+db_path = "backend/analytics.db"
 if not os.path.exists(db_path):
     print("DB NOT FOUND")
     exit()
